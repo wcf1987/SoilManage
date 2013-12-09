@@ -2,11 +2,12 @@ package com.soil.test;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 
 public class TestHibernate {
 
@@ -62,8 +63,13 @@ public class TestHibernate {
 		
 		@SuppressWarnings("deprecation")
 		private static void init()
-		{
-			sessionFactory = new Configuration().configure().buildSessionFactory();
+		{	
+			Configuration cfg = new Configuration();  
+	        cfg.configure();          
+	        ServiceRegistry  sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();           
+	        SessionFactory sessionFactory = cfg.buildSessionFactory(sr);  
+	                  
+			//sessionFactory = new Configuration().configure().buildSessionFactory();
 			session = sessionFactory.openSession();
 			tx = session.beginTransaction();
 		}
@@ -72,7 +78,7 @@ public class TestHibernate {
 		{
 			tx.commit();
 			session.close();
-			sessionFactory.close();
+			//sessionFactory.close();
 		}
 		
 		public static void main(String[] args) 
